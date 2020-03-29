@@ -1,0 +1,6 @@
+<?xml version="1.0" ?>
+<launch>
+	<node name="control_trajectory_execution_node" type="control_trajectory_execution" pkg="control_trajectory_execution" output="screen" respawn="false">
+		<rosparam file="$(find control_trajectory_execution)/config/data.yaml" command="load"/>
+	</node>
+</launch>

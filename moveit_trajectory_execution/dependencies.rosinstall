@@ -1,0 +1,11 @@
+- git:
+    local-name: manos
+    uri: git@github.com:ThanasisTs/manos.git
+
+- git:
+    local-name: openpose_utils
+    uri: git@github:ThanasisTs/openpose_utils.git
+
+- git:
+    local-name: trajectory-smoothing-ros
+    uri: git@github:ThanasisTs/trajectory-smoothing-ros.git
