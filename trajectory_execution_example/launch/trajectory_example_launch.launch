@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<launch>
-	<node name="trajectory_example_node" type="trajectory_example.py" pkg="trajectory_execution_example" args="$(find trajectory_execution_example)/csv/trajectory_example.csv" output="screen" respawn="false">
-	</node>
-</launch>

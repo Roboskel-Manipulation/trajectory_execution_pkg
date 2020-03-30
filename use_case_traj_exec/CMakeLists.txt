@@ -9,6 +9,7 @@ project(use_case_traj_exec)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roscpp
+  geometry_msgs
   trajectory_execution_msgs
   control_trajectory_execution
   actionlib

@@ -53,16 +53,21 @@
   <build_depend>trajectory_execution_msgs</build_depend>
   <build_depend>actionlib</build_depend>
   <build_depend>control_trajectory_execution</build_depend>
+  <build_depend>geometry_msgs</build_depend>
+
 
   <build_export_depend>roscpp</build_export_depend>
   <build_export_depend>trajectory_execution_msgs</build_export_depend>
   <build_export_depend>actionlib</build_export_depend>
   <build_export_depend>control_trajectory_execution</build_export_depend>
+  <build_export_depend>geometry_msgs</build_export_depend>
+
 
   <exec_depend>roscpp</exec_depend>
   <exec_depend>trajectory_execution_msgs</exec_depend>
   <exec_depend>actionlib</exec_depend>
   <exec_depend>control_trajectory_execution</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->
