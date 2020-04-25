@@ -30,6 +30,6 @@ generate_messages(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES moveit_motion_replication_msgs
- CATKIN_DEPENDS geometry_msgs roscpp rospy message_runtime
+ CATKIN_DEPENDS geometry_msgs message_runtime
 #  DEPENDS system_lib
 )

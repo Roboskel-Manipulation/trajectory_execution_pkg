@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <launch>	
 	<node name="moveit_trajectory_execution_node" pkg="moveit_trajectory_execution" type="moveit_trajectory_execution" output="screen" respawn="false">
-		<rosparam file="$(find moveit_trajectory_execution)/config/offset.yaml" command="load" />
+		<rosparam file="$(find moveit_trajectory_execution)/config/moveit_trajectory_execution.yaml" command="load" />
 	</node>
 </launch>
