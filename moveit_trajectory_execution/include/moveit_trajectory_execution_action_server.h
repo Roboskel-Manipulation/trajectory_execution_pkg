@@ -18,5 +18,6 @@
 #include <signal.h>
 #include <cmath>
 
+float init_q_x, init_q_y, init_q_z, init_q_w;
 geometry_msgs::PoseArray target_points;
 trajectory_execution_msgs::PointArray control_points;

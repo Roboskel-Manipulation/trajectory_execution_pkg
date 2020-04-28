@@ -167,6 +167,12 @@ int main(int argc, char** argv){
 
 	ros::init(argc, argv, "moveit_trajectory_execution_action_server");
 	ros::NodeHandle nh;
+	
+	nh.param("control_trajectory_execution_action_server/init_q_x", init_q_x, 0.0f);
+	nh.param("control_trajectory_execution_action_server/init_q_y", init_q_y, 0.0f);
+	nh.param("control_trajectory_execution_action_server/init_q_z", init_q_z, 0.0f);
+	nh.param("control_trajectory_execution_action_server/init_q_w", init_q_w, 0.0f);
+
 	ros::AsyncSpinner spinner(2);
 	spinner.start();
 	signal(SIGINT, event_handler);
