@@ -10,7 +10,7 @@ message (check [this](https://github.com/Roboskel-Manipulation/trajectory_execut
 ## Launch files
 To check the functionality of the package using Manos in a simulated environment, first run in a tab of
 your favourite terminal `roslaunch manos_gazebo manos_gazebo.launch` and specify the arguents for Moveit! or
-Velocity Control interface (check [this](https://github.com/Roboskel-Manipulation/manos/tree/devel) for more info)
+Velocity Control interface (check [this](https://github.com/Roboskel-Manipulation/manos) for more info)
 In another tab run `roslaunch trajectory_execution_launch trajectory_execution_launch.launch`
  
  The argument of the launch file is the following:
