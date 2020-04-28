@@ -17,8 +17,3 @@ In another tab run `roslaunch trajectory_execution_launch trajectory_execution_l
  * `control`: Set to true if you want to use the Velocity Controller method, otherwise set it to false
  for MoveIt! (default true)
  
-Lastly in a third tab run `rosrun trajectory_execution example_trajectory.py` and observe the results in Rviz (or Gazebo).
- 
- ## Test
- To check the functionality through an example, run in a terminal `roslaunch manos_gazebo manos_gazebo.launch cart_control:=true` and in another tab `roslaunch use_case_traj_exec trajectory_execution_example.launch`
- 
