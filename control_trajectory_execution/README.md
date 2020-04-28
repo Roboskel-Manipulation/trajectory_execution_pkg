@@ -1,8 +1,8 @@
 # Trajectory execution using Velocity Controllers
 
 This package utilises a Velocity Controller based on 
-https://github.com/epfl-lasa/ridgeback_ur5_controller/tree/devel/ur5_cartesian_velocity_control.
-Check out https://github.com/ThanasisTs/manos_control/tree/master/manos_cartesian_velocity_control
+[this](https://github.com/epfl-lasa/ridgeback_ur5_controller/tree/devel/ur5_cartesian_velocity_control) repo.
+Check out also [this](https://github.com/ThanasisTs/manos_control/tree/master/manos_cartesian_velocity_control) repo
 for a detailed description of the controller
 
 ## Functionality
