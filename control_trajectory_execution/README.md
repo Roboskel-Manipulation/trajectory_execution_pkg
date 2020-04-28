@@ -7,7 +7,7 @@ for a detailed description of the controller
 
 ## Functionality
 * It subscribes to a topic which provides the current pose and twist of the end effector
-(`cartesian_state_msgs/PoseTwist` ROS message)
+(`trajectory_execution_msgs/PoseTwist` ROS message)
 * It accepts a list of 3D waypoints (`trajectory_execution_msgs/PointArray` ROS message)
 * It moves to the first point of the trajectory by moving along the line connecting its current
 pose and the first point of the trajectory
