@@ -13,11 +13,9 @@ your favourite terminal `roslaunch manos_gazebo manos_gazebo.launch` and specify
 Velocity Control interface (check [this](https://github.com/ThanasisTs/manos/tree/devel) for more info)
 In another tab run `roslaunch trajectory_execution_launch trajectory_execution_launch.launch`
  
- The arguments of the launch file are the following:
+ The argument of the launch file is the following:
  * `control`: Set to true if you want to use the Velocity Controller method, otherwise set it to false
  for MoveIt! (default true)
- * `clean`: Set to true if you want to clean the input trajectory (default true)
- * `smooth`: Set to true if you want to smooth the input trajectory (default false)
  
 For the last two arguments check and their functionality check [this](https://github.com/ThanasisTs/trajectory_preprocessing_pkg). Lastly in a third tab run `rosrun trajectory_execution example_trajectory.py` and observe the results in Rviz (or Gazebo).
  
