@@ -7,7 +7,7 @@
 #include <geometry_msgs/Point.h>
 #include <visualization_msgs/Marker.h>
 
-bool init_flag = false, final_flag = false;
+bool sim, init_flag = false, final_flag = false;
 float init_gain, Dt;
 float dt, lim;
 

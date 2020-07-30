@@ -21,9 +21,27 @@ public:
 	nh_(nh),
 	as(nh_, name, boost::bind(&ControlTrackingAction::executeCB, this, _1), false),
 	action_name(name){
-		vel_sub = nh.subscribe("/manos_cartesian_velocity_controller_sim/ee_state", 10, &ControlTrackingAction::ee_state_callback, this);
-		vel_pub = nh.advertise<geometry_msgs::Twist>("/manos_cartesian_velocity_controller_sim/command_cart_vel", 10);
+		vel_sub = nh.subscribe("/manos_cartesian_velocity_controller/ee_state", 10, &ControlTrackingAction::ee_state_callback, this);
+		vel_pub = nh.advertise<geometry_msgs::Twist>("/manos_cartesian_velocity_controller/command_cart_vel", 10);			
 		vis_pub = nh.advertise<visualization_msgs::Marker>("/trajectory_visualization", 10);
+		marker.header.frame_id = "base_link";
+		marker.header.stamp = ros::Time::now();
+		marker.type = visualization_msgs::Marker::LINE_STRIP;
+		marker.action = visualization_msgs::Marker::ADD;
+		marker.pose.position.x = 0.0;
+		marker.pose.position.y = 0.0;
+		marker.pose.position.z = 0.0;
+		marker.pose.orientation.x = 0.0;
+		marker.pose.orientation.y = 0.0;
+		marker.pose.orientation.z = 0.0;
+		marker.pose.orientation.w = 1.0;
+		marker.scale.x = 0.01;
+		marker.color.a = 1.0;
+		marker.color.r = 0.0;
+		marker.color.g = 0.0;
+		marker.color.b = 1.0;
+		marker.lifetime = ros::Duration(100);
+
 		zero_vel->linear.x = 0;
 		zero_vel->linear.y = 0;
 		zero_vel->linear.z = 0;
@@ -118,9 +136,9 @@ int main(int argc, char** argv){
 	ros::NodeHandle nh;
 	nh.param("control_trajectory_execution_action_server/dt", dt, 0.0f);
 	nh.param("control_trajectory_execution_action_server/Dt", Dt, 0.0f);
-	nh.param("control_trajectory_execution_action_server/lim", lim, 0.0f);
 	nh.param("control_trajectory_execution_action_server/init_gain", init_gain, 0.0f);
-	
+	nh.param("control_trajectory_execution_action_server/sim", sim, true);
+	std::cout << sim << std::endl;
 	ros::AsyncSpinner spinner(2);
 	spinner.start();
 
