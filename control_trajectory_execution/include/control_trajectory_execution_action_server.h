@@ -8,6 +8,6 @@
 #include <visualization_msgs/Marker.h>
 
 bool sim, init_flag = false, final_flag = false;
-float init_gain, Dt;
-float dt, lim;
+float init_gain, D;
+float sleep_rate, lim;
 

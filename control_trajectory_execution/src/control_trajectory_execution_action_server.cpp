@@ -52,7 +52,9 @@ public:
 
 	void executeCB(const control_trajectory_execution::control_trackingGoalConstPtr &goal){
 		ROS_INFO("Received the waypoints");
-		
+		init_flag = false;
+		control_points.points.clear();
+		ROS_INFO("Number of control points: %d", control_points.points.size());
 		for (int i=0; i<goal->waypoints.points.size(); i++){
 			control_points.points.push_back(goal->waypoints.points[i]);
 		}
@@ -69,7 +71,7 @@ public:
 			if (abs(control_points.points[0].x - ee_pos->x) < 0.005 and abs(control_points.points[0].y - ee_pos->y) < 0.005 and abs(control_points.points[0].z - ee_pos->z) < 0.005){
 				ROS_INFO("Reached initial position");
 				init_flag = true;
-			}		
+			}
 		}
 	
 		//
@@ -79,20 +81,20 @@ public:
 			ros::Duration(0.5).sleep();
 			double start_time = ros::Time::now().toSec();
 			for (short int i=1; i<control_points.points.size(); i++){
-				vel->linear.x = Dt*(control_points.points[i].x - ee_pos->x);
-				vel->linear.y = Dt*(control_points.points[i].y - ee_pos->y);
-				vel->linear.z = Dt*(control_points.points[i].z - ee_pos->z);
+				vel->linear.x = D*(control_points.points[i].x - ee_pos->x);
+				vel->linear.y = D*(control_points.points[i].y - ee_pos->y);
+				vel->linear.z = D*(control_points.points[i].z - ee_pos->z);
 				vel_pub.publish(*vel);
 				feedback.ee_pos.points.push_back(control_points.points[i]);
 				feedback.percentage = (float)feedback.ee_pos.points.size()/control_points.points.size();
 				as.publishFeedback(feedback);
 				if (i == control_points.points.size()-1){
 					while (not final_flag){
-						vel->linear.x = Dt*(control_points.points[i].x - ee_pos->x);
-						vel->linear.y = Dt*(control_points.points[i].y - ee_pos->y);
-						vel->linear.z = Dt*(control_points.points[i].z - ee_pos->z);
+						vel->linear.x = D*(control_points.points[i].x - ee_pos->x);
+						vel->linear.y = D*(control_points.points[i].y - ee_pos->y);
+						vel->linear.z = D*(control_points.points[i].z - ee_pos->z);
 						vel_pub.publish(*vel);
-						ros::Duration(dt).sleep();
+						ros::Duration(sleep_rate).sleep();
 						if (abs(control_points.points[i].x - ee_pos->x) < 0.005 and abs(control_points.points[i].y - ee_pos->y) < 0.005 and abs(control_points.points[i].z - ee_pos->z) < 0.005){
 							ROS_INFO("Reached final point");
 							final_flag = true;
@@ -100,7 +102,7 @@ public:
 					}
 				}
 				else{
-					ros::Duration(dt).sleep();
+					ros::Duration(sleep_rate).sleep();
 				}
 			}
 			ROS_INFO("Published all velocities");
@@ -134,12 +136,11 @@ public:
 int main(int argc, char** argv){
 	ros::init(argc, argv, "control_trajectory_execution_action_server");
 	ros::NodeHandle nh;
-	nh.param("control_trajectory_execution_action_server/dt", dt, 0.0f);
-	nh.param("control_trajectory_execution_action_server/Dt", Dt, 0.0f);
+	nh.param("control_trajectory_execution_action_server/sleep_rate", sleep_rate, 0.0f);
+	nh.param("control_trajectory_execution_action_server/D", D, 0.0f);
 	nh.param("control_trajectory_execution_action_server/init_gain", init_gain, 0.0f);
 	nh.param("control_trajectory_execution_action_server/sim", sim, true);
-	std::cout << sim << std::endl;
-	ros::AsyncSpinner spinner(2);
+	ros::AsyncSpinner spinner(3);
 	spinner.start();
 
 

@@ -1,4 +1,4 @@
-dt: 0.047
-init_gain: 1
-Dt: 6
+sleep_rate: 0.167
+init_gain: 0.5
+D: 10
 lim: 0.4
