@@ -12,7 +12,9 @@ protected:
 	control_trajectory_execution::control_trackingResult result;
 	trajectory_custom_msgs::PointArray control_points;
 	geometry_msgs::PointPtr ee_pos = boost::make_shared<geometry_msgs::Point>();
+	geometry_msgs::PointPtr ee_vel = boost::make_shared<geometry_msgs::Point>();
 	geometry_msgs::TwistPtr vel = boost::make_shared<geometry_msgs::Twist>();
+	geometry_msgs::PointPtr acc = boost::make_shared<geometry_msgs::Point>();
 	geometry_msgs::TwistPtr zero_vel = boost::make_shared<geometry_msgs::Twist>();
 	visualization_msgs::Marker marker;
 
@@ -81,18 +83,31 @@ public:
 			ros::Duration(0.5).sleep();
 			double start_time = ros::Time::now().toSec();
 			for (short int i=1; i<control_points.points.size(); i++){
-				vel->linear.x = D*(control_points.points[i].x - ee_pos->x);
-				vel->linear.y = D*(control_points.points[i].y - ee_pos->y);
-				vel->linear.z = D*(control_points.points[i].z - ee_pos->z);
+				// Acceleration command
+				acc->x = -K*ee_vel->x + D*(control_points.points[i].x - ee_pos->x);
+				acc->y = -K*ee_vel->y + D*(control_points.points[i].y - ee_pos->y);
+				acc->z = -K*ee_vel->z + D*(control_points.points[i].z - ee_pos->z);
+
+				// Velocity command
+				vel->linear.x += acc->x*control_cycle_duration;
+				vel->linear.y += acc->y*control_cycle_duration;
+				vel->linear.z += acc->z*control_cycle_duration;
 				vel_pub.publish(*vel);
+				
 				feedback.ee_pos.points.push_back(control_points.points[i]);
 				feedback.percentage = (float)feedback.ee_pos.points.size()/control_points.points.size();
 				as.publishFeedback(feedback);
 				if (i == control_points.points.size()-1){
 					while (not final_flag){
-						vel->linear.x = D*(control_points.points[i].x - ee_pos->x);
-						vel->linear.y = D*(control_points.points[i].y - ee_pos->y);
-						vel->linear.z = D*(control_points.points[i].z - ee_pos->z);
+						// Acceleration command
+						acc->x = -K*ee_vel->x + D*(control_points.points[i].x - ee_pos->x);
+						acc->y = -K*ee_vel->y + D*(control_points.points[i].y - ee_pos->y);
+						acc->z = -K*ee_vel->z + D*(control_points.points[i].z - ee_pos->z);
+
+						// Velocity command
+						vel->linear.x += acc->x*control_cycle_duration;
+						vel->linear.y += acc->y*control_cycle_duration;
+						vel->linear.z += acc->z*control_cycle_duration;
 						vel_pub.publish(*vel);
 						ros::Duration(sleep_rate).sleep();
 						if (abs(control_points.points[i].x - ee_pos->x) < 0.005 and abs(control_points.points[i].y - ee_pos->y) < 0.005 and abs(control_points.points[i].z - ee_pos->z) < 0.005){
@@ -117,9 +132,19 @@ public:
 
 
 	void ee_state_callback (const cartesian_state_msgs::PoseTwist::ConstPtr msg){
+		if (time_flag){
+			last_time = msg->header.stamp.toSec();
+			time_flag = false;
+		}
+		control_cycle_duration = msg->header.stamp.toSec() - last_time;
+		last_time = msg->header.stamp.toSec();
+
 		ee_pos->x = msg->pose.position.x;
 		ee_pos->y = msg->pose.position.y;
 		ee_pos->z = msg->pose.position.z;
+		ee_vel->x = msg->twist.linear.x;
+		ee_vel->y = msg->twist.linear.y;
+		ee_vel->z = msg->twist.linear.z;
 		if (init_flag){
 			marker.points.push_back(*ee_pos);
 			marker.scale.x = 0.01;
