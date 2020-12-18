@@ -10,7 +10,7 @@ protected:
 	std::string action_name;
 	control_trajectory_execution::control_trackingFeedback feedback;
 	control_trajectory_execution::control_trackingResult result;
-	trajectory_execution_msgs::PointArray control_points;
+	trajectory_custom_msgs::PointArray control_points;
 	geometry_msgs::PointPtr ee_pos = boost::make_shared<geometry_msgs::Point>();
 	geometry_msgs::TwistPtr vel = boost::make_shared<geometry_msgs::Twist>();
 	geometry_msgs::TwistPtr zero_vel = boost::make_shared<geometry_msgs::Twist>();
@@ -21,8 +21,8 @@ public:
 	nh_(nh),
 	as(nh_, name, boost::bind(&ControlTrackingAction::executeCB, this, _1), false),
 	action_name(name){
-		vel_sub = nh.subscribe("/manos_cartesian_velocity_controller/ee_state", 10, &ControlTrackingAction::ee_state_callback, this);
-		vel_pub = nh.advertise<geometry_msgs::Twist>("/manos_cartesian_velocity_controller/command_cart_vel", 10);			
+		vel_sub = nh.subscribe("/ur3_cartesian_velocity_controller/ee_state", 10, &ControlTrackingAction::ee_state_callback, this);
+		vel_pub = nh.advertise<geometry_msgs::Twist>("/ur3_cartesian_velocity_controller/command_cart_vel", 10);			
 		vis_pub = nh.advertise<visualization_msgs::Marker>("/trajectory_visualization", 10);
 		marker.header.frame_id = "base_link";
 		marker.header.stamp = ros::Time::now();
@@ -116,7 +116,7 @@ public:
 	}
 
 
-	void ee_state_callback (const trajectory_execution_msgs::PoseTwist::ConstPtr msg){
+	void ee_state_callback (const cartesian_state_msgs::PoseTwist::ConstPtr msg){
 		ee_pos->x = msg->pose.position.x;
 		ee_pos->y = msg->pose.position.y;
 		ee_pos->z = msg->pose.position.z;

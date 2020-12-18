@@ -1,7 +1,7 @@
 #include <ros/ros.h>
 #include <actionlib/server/simple_action_server.h>
 #include <moveit_trajectory_execution/moveit_trackingAction.h>
-#include <trajectory_execution_msgs/PointArray.h>
+#include <trajectory_custom_msgs/PointArray.h>
 #include <geometry_msgs/PoseArray.h>
 #include <geometry_msgs/Pose.h>
 
@@ -20,4 +20,4 @@
 
 float init_q_x, init_q_y, init_q_z, init_q_w;
 geometry_msgs::PoseArray target_points;
-trajectory_execution_msgs::PointArray control_points;
+trajectory_custom_msgs::PointArray control_points;

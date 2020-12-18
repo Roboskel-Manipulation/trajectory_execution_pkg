@@ -10,7 +10,8 @@ find_package(catkin REQUIRED COMPONENTS
 	tf_conversions
 	visualization_msgs
 	keypoint_3d_matching_msgs
-	trajectory_execution_msgs
+	cartesian_state_msgs
+	trajectory_custom_msgs
 	actionlib
 	actionlib_msgs
 )
@@ -22,7 +23,7 @@ add_action_files(
 
 generate_messages(
 	DEPENDENCIES
-	actionlib_msgs std_msgs trajectory_execution_msgs
+	actionlib_msgs std_msgs trajectory_custom_msgs cartesian_state_msgs
 )
 
 set(CMAKE_CXX_FLAGS "-O2 -O3 -std=c++11 -Wall")
