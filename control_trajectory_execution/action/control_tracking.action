@@ -1,5 +1,5 @@
 #goal definition
-trajectory_custom_msgs/PointArray waypoints
+trajectory_custom_msgs/PointStampedArray waypoints
 ---
 #result definition
 bool success
