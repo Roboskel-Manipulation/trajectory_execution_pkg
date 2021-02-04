@@ -1,10 +1,11 @@
 <?xml version="1.0" ?>
 <launch>
+
+	<arg name="smooth" default="false"/>
+
 	<node name="control_trajectory_execution_action_server" type="control_trajectory_execution_action_server" pkg="control_trajectory_execution" output="screen" respawn="false">
 		<rosparam file="$(find control_trajectory_execution)/config/control_trajectory_execution_action_server.yaml" command="load"/>
+		<param name="smooth" value="$(arg smooth)"/>
 	</node>
 
-	<node name="control_trajectory_execution_action_client" type="control_trajectory_execution_action_client" pkg="demo_HRI" output="screen" respawn="false">
-		<rosparam file="$(find demo_HRI)/config/control_trajectory_execution_action_client.yaml" command="load"/>
-	</node>
 </launch>

@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<launch>
-	<arg name="cart_control" default="true"/>
-
-	<include file="$(find moveit_trajectory_execution)/launch/moveit_trajectory_execution.launch" unless="$(arg cart_control)"/>
-	<include file="$(find control_trajectory_execution)/launch/control_trajectory_execution.launch" if="$(arg cart_control)"/>
-
-</launch>

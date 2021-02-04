@@ -1,4 +1,1 @@
-sleep_rate: 0.167
-init_gain: 0.5
-D: 10
-lim: 0.4
+sleep_rate: 0.047

@@ -26,7 +26,7 @@ public:
 		vel_sub = nh.subscribe(ee_state_topic, 10, &ControlTrackingAction::ee_state_callback, this);
 		vel_pub = nh.advertise<geometry_msgs::Twist>(ee_command_topic, 10);			
 		vis_pub = nh.advertise<visualization_msgs::Marker>("/trajectory_visualization", 10);
-		control_points_pub = nh.advertise<geometry_msgs::PointStamped>("/control_points_topic", 10);
+		control_points_pub = nh.advertise<geometry_msgs::PointStamped>("/trajectory_points", 10);
 		marker.header.frame_id = "base_link";
 		marker.header.stamp = ros::Time::now();
 		marker.type = visualization_msgs::Marker::LINE_STRIP;
@@ -55,45 +55,56 @@ public:
 
 	void executeCB(const control_trajectory_execution::control_trackingGoalConstPtr &goal){
 		ROS_INFO("Received the waypoints");
-		init_flag = false;
 		control_points.points.clear();
-		ROS_INFO("Number of control points: %d", control_points.points.size());
 		for (int i=0; i<goal->waypoints.points.size(); i++){
 			control_points.points.push_back(goal->waypoints.points[i]);
 		}
 
+		ROS_INFO("Number of control points: %d", control_points.points.size());
 		//
 		// Move to the first point of the trajectory
 		//
-		while (not init_flag){
-			vel->linear.x = init_gain*(control_points.points[0].point.x - ee_pos->x);
-			vel->linear.y = init_gain*(control_points.points[0].point.y - ee_pos->y);
-			vel->linear.z = init_gain*(control_points.points[0].point.z - ee_pos->z);
-			vel_pub.publish(*vel);
-			ros::Duration(0.2).sleep();
-			if (abs(control_points.points[0].point.x - ee_pos->x) < 0.005 and abs(control_points.points[0].point.y - ee_pos->y) < 0.005){// and abs(control_points.points[0].point.z - ee_pos->z) < 0.005){
+		control_points_pub.publish(control_points.points[0]);
+		while (true){
+			std::cout << abs(control_points.points[0].point.x - ee_pos->x) << " " << abs(control_points.points[0].point.y - ee_pos->y) << " " << abs(control_points.points[0].point.z - ee_pos->z) << std::endl;
+			if (abs(control_points.points[0].point.x - ee_pos->x) < 0.005 and abs(control_points.points[0].point.y - ee_pos->y) < 0.005 and abs(control_points.points[0].point.z - ee_pos->z) < 0.005){
 				ROS_INFO("Reached initial position");
 				init_flag = true;
+				break;
 			}
 		}
-	
-		//
+		
+
 		// Publish trajectory points
 		//	
-		if (init_flag){
-			ros::Duration(0.5).sleep();
-			double start_time = ros::Time::now().toSec();
-			for (auto control_point : control_points.points){
-				control_points_pub.publish(control_point);
+		ros::Duration(0.5).sleep();
+		double start_time = ros::Time::now().toSec();
+		if (smooth){
+			sleep_rate = (control_points.points[control_points.points.size()-1].header.stamp.toSec() - control_points.points[0].header.stamp.toSec())/control_points.points.size();
+
+ 			for (int i=1; i<control_points.points.size(); ++i){
+				control_points_pub.publish(control_points.points[i]);
 				ros::Duration(sleep_rate).sleep();
 			}
-			double end_time = ros::Time::now().toSec();
-			ROS_INFO("The motion lasted %f secs", end_time - start_time);
-			vel_pub.publish(*zero_vel);
-			result.success = true;
-			as.setSucceeded(result);
-
 		}
+		else{
+			for (int i=1; i<control_points.points.size(); ++i){
+				if (i != control_points.points.size() -1){
+					sleep_rate = control_points.points[i+1].header.stamp.toSec() - control_points.points[i].header.stamp.toSec();
+				}
+				else{
+					sleep_rate = 0;
+				}
+				control_points_pub.publish(control_points.points[i]);
+				ros::Duration(sleep_rate).sleep();
+			}
+		}
+
+		double end_time = ros::Time::now().toSec();
+		ROS_INFO("The motion lasted %f secs", end_time - start_time);
+		vel_pub.publish(*zero_vel);
+		result.success = true;
+		as.setSucceeded(result);
 	}
 
 
@@ -118,11 +129,10 @@ public:
 int main(int argc, char** argv){
 	ros::init(argc, argv, "control_trajectory_execution_action_server");
 	ros::NodeHandle nh;
-	nh.param("control_trajectory_execution_action_server/sleep_rate", sleep_rate, 0.0f);
-	nh.param("control_trajectory_execution_action_server/init_gain", init_gain, 0.0f);
-	nh.param("reactive_control_node/state_topic", ee_state_topic, std::string("/ur3_cartesian_velocity_controller/ee_state"));
-	nh.param("reactive_control_node/command_topic", ee_command_topic, std::string("/ur3_cartesian_velocity_controller/command_cart_vel"));
-	
+	nh.param("control_trajectory_execution_action_server/smooth", smooth, false);
+	nh.param("cartesian_trajectory_tracking/state_topic", ee_state_topic, std::string("/ur3_cartesian_velocity_controller/ee_state"));
+	nh.param("cartesian_trajectory_tracking/command_topic", ee_command_topic, std::string("/ur3_cartesian_velocity_controller/command_cart_vel"));
+
 	ros::AsyncSpinner spinner(3);
 	spinner.start();
 
