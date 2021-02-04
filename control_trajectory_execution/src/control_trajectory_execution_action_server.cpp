@@ -65,14 +65,14 @@ public:
 		// Move to the first point of the trajectory
 		//
 		control_points_pub.publish(control_points.points[0]);
-		while (true){
-			std::cout << abs(control_points.points[0].point.x - ee_pos->x) << " " << abs(control_points.points[0].point.y - ee_pos->y) << " " << abs(control_points.points[0].point.z - ee_pos->z) << std::endl;
-			if (abs(control_points.points[0].point.x - ee_pos->x) < 0.005 and abs(control_points.points[0].point.y - ee_pos->y) < 0.005 and abs(control_points.points[0].point.z - ee_pos->z) < 0.005){
-				ROS_INFO("Reached initial position");
-				init_flag = true;
-				break;
-			}
-		}
+		ros::Duration(3).sleep();
+		// while (true){
+		// 	if (abs(control_points.points[0].point.x - ee_pos->x) < 0.01 and abs(control_points.points[0].point.y - ee_pos->y) < 0.01 and abs(control_points.points[0].point.z - ee_pos->z) < 0.005){
+		// 		ROS_INFO("Reached initial position");
+		// 		init_flag = true;
+		// 		break;
+		// 	}
+		// }
 		
 
 		// Publish trajectory points
@@ -133,7 +133,7 @@ int main(int argc, char** argv){
 	nh.param("cartesian_trajectory_tracking/state_topic", ee_state_topic, std::string("/ur3_cartesian_velocity_controller/ee_state"));
 	nh.param("cartesian_trajectory_tracking/command_topic", ee_command_topic, std::string("/ur3_cartesian_velocity_controller/command_cart_vel"));
 
-	ros::AsyncSpinner spinner(3);
+	ros::AsyncSpinner spinner(4);
 	spinner.start();
 
 
