@@ -18,7 +18,7 @@ find_package(catkin REQUIRED COMPONENTS
   tf2_geometry_msgs
   tf2_ros
   tf
-  trajectory_execution_msgs
+  trajectory_custom_msgs
   visualization_msgs
   std_msgs
   actionlib
@@ -32,7 +32,7 @@ add_action_files(
 
 generate_messages(
   DEPENDENCIES
-  actionlib_msgs trajectory_execution_msgs)
+  actionlib_msgs trajectory_custom_msgs)
 
 find_package(Boost REQUIRED system filesystem date_time thread)
 

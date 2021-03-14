@@ -1,15 +1,10 @@
-# Trajectory execution using Velocity Controllers
+# control_trajectory_execution
 
-This package utilises a Velocity Controller based on 
-[this](https://github.com/epfl-lasa/ridgeback_ur5_controller/tree/devel/ur5_cartesian_velocity_control) repo.
-Check out also [this](https://github.com/ThanasisTs/manos_control/tree/master/manos_cartesian_velocity_control) repo
-for a detailed description of the controller
+This package provides an action server for offline 3D cartesian trajectory execution. It accepts a list of 3D cartesian points and publishes each one of them at appropriate publishing rate so that the overall robot motion lasts the same duration as the input motion.
 
 ## Functionality
+* It accepts a list of 3D waypoints (`trajectory_custom_msgs/PointArray` ROS message).
+* It computes the appropriate publishing rates.
 * It subscribes to a topic which provides the current pose and twist of the end effector
-(`trajectory_execution_msgs/PoseTwist` ROS message)
-* It accepts a list of 3D waypoints (`trajectory_execution_msgs/PointArray` ROS message)
-* It moves to the first point of the trajectory by moving along the line connecting its current
-pose and the first point of the trajectory
-* It executes the given trajectory by producing linear velocities based on its current position
-and the waypoints of the trajectory.
+(`cartesian_state_msgs/PoseTwist` ROS message). Used only for visualization purposes.
+* It publishes the waypoints to the `/rajectory_points` topic.

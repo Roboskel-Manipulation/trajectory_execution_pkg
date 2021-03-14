@@ -1,9 +1,9 @@
 #goal definition
-trajectory_execution_msgs/PointArray waypoints
+trajectory_custom_msgs/PointStampedArray waypoints
 ---
 #result definition
 bool success
 ---
 #feedback
 float64 percentage
-trajectory_execution_msgs/PointArray ee_pos
+trajectory_custom_msgs/PointArray ee_pos
