@@ -1,4 +1,4 @@
-# ROS metapackage for robot trajectory execution
+# trajectory_replication
 
 ## Description
 This ROS metapackage provides two packages for trajectory execution by a UR3 cobot using two different methods. The first one is based on [MoveIt!](https://moveit.ros.org/) and the second one on a Cartesian Velocity Controller([CVC](https://github.com/Roboskel-Manipulation/manos/tree/updated_driver/manos_cartesian_control)).
