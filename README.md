@@ -10,7 +10,4 @@ The input trajectory consists of a list of 3D waypoints in the form of [`traject
 * Moveit!: `roslaunch moveit_trajectory_execution moveit_trajectory_execution.launch`
 
 * CVC: `roslaunch control_trajectory_execution control_trajectory_execution.launch`
-
-### Arguements
-* CVC
- * smooth: True if the input trajectory is a Bezier Curve.
+  * Argument:  _smooth_: True if the input trajectory is a Bezier Curve.
