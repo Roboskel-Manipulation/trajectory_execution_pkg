@@ -6,7 +6,7 @@ protected:
 	ros::Subscriber vel_sub;
 	ros::Publisher vel_pub;
 	ros::Publisher vis_pub;
-	ros::Publisher control_points_pub;
+	ros::Publisher control_points_pub, ee_state_pub;
 	actionlib::SimpleActionServer<control_trajectory_execution::control_trackingAction> as;
 	std::string action_name;
 	control_trajectory_execution::control_trackingFeedback feedback;
@@ -26,6 +26,7 @@ public:
 		vel_sub = nh.subscribe(ee_state_topic, 10, &ControlTrackingAction::ee_state_callback, this);
 		vel_pub = nh.advertise<geometry_msgs::Twist>(ee_command_topic, 10);			
 		vis_pub = nh.advertise<visualization_msgs::Marker>("/trajectory_visualization", 10);
+		ee_state_pub = nh.advertise<cartesian_state_msgs::PoseTwist>("/ee_state_action_server_topic", 10);
 		control_points_pub = nh.advertise<geometry_msgs::PointStamped>("/trajectory_points", 10);
 		marker.header.frame_id = "base_link";
 		marker.header.stamp = ros::Time::now();
@@ -65,23 +66,14 @@ public:
 		// Move to the first point of the trajectory
 		//
 		control_points_pub.publish(control_points.points[0]);
-		ros::Duration(3).sleep();
-		// while (true){
-		// 	if (abs(control_points.points[0].point.x - ee_pos->x) < 0.01 and abs(control_points.points[0].point.y - ee_pos->y) < 0.01 and abs(control_points.points[0].point.z - ee_pos->z) < 0.005){
-		// 		ROS_INFO("Reached initial position");
-		// 		init_flag = true;
-		// 		break;
-		// 	}
-		// }
-		
+		// ros::Duration(8).sleep();
 
+		init_flag = true;
 		// Publish trajectory points
-		//	
-		ros::Duration(0.5).sleep();
 		double start_time = ros::Time::now().toSec();
 		if (smooth){
 			sleep_rate = (control_points.points[control_points.points.size()-1].header.stamp.toSec() - control_points.points[0].header.stamp.toSec())/control_points.points.size();
-
+			ROS_INFO("Publish rate: %f", sleep_rate);
  			for (int i=1; i<control_points.points.size(); ++i){
 				control_points_pub.publish(control_points.points[i]);
 				ros::Duration(sleep_rate).sleep();
@@ -102,7 +94,7 @@ public:
 
 		double end_time = ros::Time::now().toSec();
 		ROS_INFO("The motion lasted %f secs", end_time - start_time);
-		vel_pub.publish(*zero_vel);
+		// vel_pub.publish(*zero_vel);
 		result.success = true;
 		as.setSucceeded(result);
 	}
@@ -113,15 +105,8 @@ public:
 		ee_pos->y = msg->pose.position.y;
 		ee_pos->z = msg->pose.position.z;
 
-		if (init_flag){
-			marker.points.push_back(*ee_pos);
-			marker.scale.x = 0.01;
-			marker.color.a = 1.0; // Don't forget to set the alpha!
-			marker.color.r = 0.0;
-			marker.color.g = 0.0;
-			marker.color.b = 1.0;
-		  	vis_pub.publish(marker);
-		}
+		if (init_flag)
+			ee_state_pub.publish(*msg);
 	}
 };
 
