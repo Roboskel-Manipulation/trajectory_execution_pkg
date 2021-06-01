@@ -1,4 +1,4 @@
-# Trajectory execution using MoveIt!
+# moveit_trajectory_replication
 
 This package utilises MoveIt! in order for an end effector to track a given cartesian trajectory.
 
